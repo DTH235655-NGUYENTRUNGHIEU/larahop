@@ -10,6 +10,7 @@ use App\Http\Controllers\DonHangController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KhachHangController;
 use App\Http\Controllers\QuanTriVienController;
+use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 

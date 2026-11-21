@@ -61,42 +61,53 @@
 		<!-- Header -->
 		<div class="offcanvas-header flex-column align-items-start py-3 pt-lg-4">
 			<div class="d-flex align-items-center justify-content-between w-100">
-				<h4 class="offcanvas-title" id="shoppingCartLabel">Giỏ hàng (1)</h4>
+				<h4 class="offcanvas-title" id="shoppingCartLabel">Giỏ hàng ({{ Cart::count() ?? 0 }})</h4>
 				<button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
 			</div>
 		</div>
 		
-		<!-- Items -->
-		<div class="offcanvas-body d-flex flex-column gap-4 pt-2">
-			<!-- Item -->
-			<div class="d-flex align-items-center">
-				<a class="flex-sm-shrink-0" href="#" style="width:142px">
-					<div class="ratio bg-body-tertiary rounded overflow-hidden" style="--cz-aspect-ratio:calc(110 / 142 * 100%)">
-						<img src="{{ asset('public/assets/img/shop/10.png') }}" alt="Thumbnail" />
+		@if(Cart::count() > 0)
+			<!-- Items -->
+			<div class="offcanvas-body d-flex flex-column gap-4 pt-2">
+				<!-- Item -->
+				@foreach (Cart::content() as $value)
+					<div class="d-flex align-items-center">
+						<a class="flex-sm-shrink-0" href="#" style="width:142px">
+							<div class="ratio bg-body-tertiary rounded overflow-hidden" style="--cz-aspect-ratio:calc(110 / 142 * 100%)">
+								<img src="{{ asset('storage/app/private/' . $value->options->image) }}" alt="Thumbnail" />
+							</div>
+						</a>
+						<div class="w-100 min-w-0 ps-3">
+							<h5 class="d-flex animate-underline mb-2">
+								<a class="d-block fs-sm fw-medium text-truncate animate-target" href="#">{{ $value->name }}</a>
+							</h5>
+							<div class="d-flex align-items-center justify-content-between gap-1">
+								<div class="h6 mt-1 mb-0">{{ number_format($value->price, 0, ',', '.') }}<small>đ</small></div>
+								<a href="{{ route('frontend.giohang.xoa', ['row_id' => $value->rowId]) }}" class="btn btn-icon btn-sm flex-shrink-0 fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Xóa khỏi giỏ">
+									<i class="ci-trash fs-base"></i>
+								</a>
+							</div>
+						</div>
 					</div>
-				</a>
-				<div class="w-100 min-w-0 ps-3">
-					<h5 class="d-flex animate-underline mb-2">
-						<a class="d-block fs-sm fw-medium text-truncate animate-target" href="#">Apple iPhone 14 128GB White</a>
-					</h5>
-					<div class="d-flex align-items-center justify-content-between gap-1">
-						<div class="h6 mt-1 mb-0">$27</div>
-						<button type="button" class="btn btn-icon btn-sm flex-shrink-0 fs-sm" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-sm" data-bs-title="Remove">
-							<i class="ci-trash fs-base"></i>
-						</button>
-					</div>
+				@endforeach
+			</div>
+			
+			<!-- Footer -->
+			<div class="offcanvas-header flex-column align-items-start">
+				<div class="d-flex align-items-center justify-content-between w-100 mb-3 mb-md-4">
+					<span class="text-light-emphasis">Tổng tiền:</span>
+					<span class="h6 mb-0">{{ Cart::priceTotal() }}<small>đ</small></span>
 				</div>
+				<a class="btn btn-lg btn-dark w-100 rounded-pill" href="{{ route('frontend.giohang') }}">Giỏ hàng</a>
 			</div>
-		</div>
-		
-		<!-- Footer -->
-		<div class="offcanvas-header flex-column align-items-start">
-			<div class="d-flex align-items-center justify-content-between w-100 mb-3 mb-md-4">
-				<span class="text-light-emphasis">Tổng tiền:</span>
-				<span class="h6 mb-0">$47</span>
+		@else
+			<div class="offcanvas-body text-center">
+				<svg class="d-block mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" width="60" viewBox="0 0 29.5 30"><path class="text-body-tertiary" d="M17.8 4c.4 0 .8-.3.8-.8v-2c0-.4-.3-.8-.8-.8-.4 0-.8.3-.8.8v2c0 .4.3.8.8.8zm3.2.6c.4.2.8 0 1-.4l.4-.9c.2-.4 0-.8-.4-1s-.8 0-1 .4l-.4.9c-.2.4 0 .9.4 1zm-7.5-.4c.2.4.6.6 1 .4s.6-.6.4-1l-.4-.9c-.2-.4-.6-.6-1-.4s-.6.6-.4 1l.4.9z" fill="currentColor"/><path class="text-body-emphasis" d="M10.7 24.5c-1.5 0-2.8 1.2-2.8 2.8S9.2 30 10.7 30s2.8-1.2 2.8-2.8-1.2-2.7-2.8-2.7zm0 4c-.7 0-1.2-.6-1.2-1.2s.6-1.2 1.2-1.2 1.2.6 1.2 1.2-.5 1.2-1.2 1.2zm11.1-4c-1.5 0-2.8 1.2-2.8 2.8a2.73 2.73 0 0 0 2.8 2.8 2.73 2.73 0 0 0 2.8-2.8c0-1.6-1.3-2.8-2.8-2.8zm0 4c-.7 0-1.2-.6-1.2-1.2s.6-1.2 1.2-1.2 1.2.6 1.2 1.2-.6 1.2-1.2 1.2zM8.7 18h16c.3 0 .6-.2.7-.5l4-10c.2-.5-.2-1-.7-1H9.3c-.4 0-.8.3-.8.8s.4.7.8.7h18.3l-3.4 8.5H9.3L5.5 10 5.4.7 5.1.5 4.8.5h-4c-.5 0-.8.3-.8.7s.3.8.8.8h3.4l3.7 14.6a3.24 3.24 0 0 0-2.3 3.1C5.5 21.5 7 23 8.7 23h16c.4 0 .8-.3.8-.8s-.3-.8-.8-.8h-16a1.79 1.79 0 0 1-1.8-1.8c0-1 .9-1.6 1.8-1.6z" fill="currentColor"/></svg>
+				<h6 class="mb-2">Giỏ hàng của bạn hiện đang trống!</h6>
+				<p class="fs-sm mb-4">Khám phá nhiều mặt hàng của chúng tôi và thêm sản phẩm vào giỏ hàng.</p>
+				<a class="btn btn-dark rounded-pill" href="{{ route('frontend.home') }}">Tiếp tục mua sắm</a>
 			</div>
-			<a class="btn btn-lg btn-dark w-100 rounded-pill" href="{{ route('frontend.giohang') }}">Giỏ hàng</a>
-		</div>
+		@endif
 	</div>
 	
 	<!-- Navigation bar (Page header) -->
@@ -200,7 +211,7 @@
 				
 				<!-- Cart button -->
 				<button type="button" class="btn btn-icon btn-lg fs-xl btn-outline-secondary position-relative border-0 rounded-circle animate-scale" data-bs-toggle="offcanvas" data-bs-target="#shoppingCart">
-					<span class="position-absolute top-0 start-100 badge fs-xs text-bg-primary rounded-pill mt-1 ms-n4 z-2" style="--cz-badge-padding-y:.25em; --cz-badge-padding-x:.42em">1</span>
+					<span class="position-absolute top-0 start-100 badge fs-xs text-bg-primary rounded-pill mt-1 ms-n4 z-2" style="--cz-badge-padding-y:.25em; --cz-badge-padding-x:.42em">{{ Cart::count() ?? 0 }}</span>
 					<i class="ci-shopping-bag animate-target me-1"></i>
 				</button>
 			</div>
@@ -249,7 +260,7 @@
 					</ul>
 					<div class="vr text-body-secondary opacity-25 mx-4 d-none d-md-inline-block order-md-2"></div>
 					<p class="fs-xs text-center text-lg-start mb-0 order-md-1">
-						Bản quyền &copy; bởi <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'Laravel') }}</a></span>.
+						Bản quyền © bởi <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'Laravel') }}</a></span>.
 					</p>
 				</div>
 			</div>

@@ -9,6 +9,7 @@
         "php": "^8.3",
         "anayarojo/shoppingcart": "^4.2",
         "laravel/framework": "^13.17",
+        "laravel/socialite": "^5.33",
         "laravel/tinker": "^3.0",
         "laravel/ui": "^4.6",
         "maatwebsite/excel": "^4.0"

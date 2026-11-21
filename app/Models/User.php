@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,11 +9,24 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 
-#[Fillable(['name', 'email', 'username', 'role', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
+    protected $table = 'users';
+
+    protected $fillable = [
+        'name',
+        'email',
+        'username',
+        'role',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
     protected function casts(): array
     {
@@ -29,6 +39,16 @@ class User extends Authenticatable
     public function DonHang(): HasMany
     {
         return $this->hasMany(DonHang::class, 'user_id', 'id');
+    }
+
+    public function BaiViet(): HasMany
+    {
+        return $this->hasMany(BaiViet::class, 'user_id', 'id');
+    }
+
+    public function BinhLuanBaiViet(): HasMany
+    {
+        return $this->hasMany(BinhLuanBaiViet::class, 'user_id', 'id');
     }
 
     public function sendPasswordResetNotification($token)

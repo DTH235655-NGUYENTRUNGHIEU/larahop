@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DatHangThanhCongEmail;
 use Gloudemans\Shoppingcart\Facades\Cart;
 
 class KhachHangController extends Controller
@@ -57,6 +59,8 @@ class KhachHangController extends Controller
             $ct->dongiaban = $value->price;
             $ct->save();
         }
+
+        Mail::to(Auth::user()->email)->send(new DatHangThanhCongEmail($dh));
 
         return redirect()->route('user.dathangthanhcong');
     }

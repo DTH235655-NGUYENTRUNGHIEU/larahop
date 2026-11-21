@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 
+// Google OAuth
+Route::get('/login/google', [HomeController::class, 'getGoogleLogin'])->name('google.login');
+Route::get('/login/google/callback', [HomeController::class, 'getGoogleCallback'])->name('google.callback');
+
 // Trang chủ khách vãng lai
 Route::name('frontend.')->group(function() {
 	Route::get('/', [HomeController::class, 'getHome'])->name('home');

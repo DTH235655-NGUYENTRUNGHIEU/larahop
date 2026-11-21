@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light" data-pwa="true">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="light" data-pwa="true">
 <head>
 	<meta charset="utf-8" />
 	
@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover" />
 	
 	<!-- Title -->
-	<title>Đăng ký tài khoản | Cartzilla</title>
+	<title>Đăng ký tài khoản | {{ config('app.name', 'Laravel') }}</title>
 	
 	<!-- Favicon / App icons -->
 	<link rel="icon" type="image/png" href="{{ asset('public/assets/img/app-icons/icon-32x32.png') }}" sizes="32x32" />
@@ -53,6 +53,7 @@
 				
 				<!-- Form -->
 				<form method="post" action="{{ route('register') }}" class="needs-validation" novalidate>
+					@csrf
 					<div class="position-relative mb-4">
 						<label for="register-email" class="form-label">Họ và tên</label>
 						<input type="text" class="form-control form-control-lg @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required />
@@ -108,7 +109,7 @@
 				
 				<!-- Social login -->
 				<div class="d-flex flex-column flex-sm-row gap-3 pb-4 mb-3 mb-lg-4">
-					<a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
+					<a href="{{ route('google.login') }}" class="btn btn-lg btn-outline-secondary w-100 px-2">
 						<i class="ci-google ms-1 me-1"></i> Google
 					</a>
 					<a href="#" class="btn btn-lg btn-outline-secondary w-100 px-2">
@@ -122,7 +123,7 @@
 				<!-- Footer -->
 				<footer class="mt-auto">
 					<p class="fs-xs mb-0">
-						Bản quyền &copy; bởi <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'Laravel') }}</a></span>.
+						Bản quyền © bởi <span class="animate-underline"><a class="animate-target text-dark-emphasis text-decoration-none" href="#" target="_blank">{{ config('app.name', 'Laravel') }}</a></span>.
 					</p>
 				</footer>
 			</div>
@@ -143,6 +144,7 @@
 	<!-- Customizer toggle -->
 	<div class="floating-buttons position-fixed top-50 end-0 z-sticky me-3 me-xl-4 pb-4"></div>
 	
+
 	<!-- Bootstrap + Theme scripts -->
 	<script src="{{ asset('public/assets/js/theme.min.js') }}"></script>
 </body>

@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\LoaiSanPham;
 use App\Models\SanPham;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Laravel\Socialite\Facades\Socialite;
+use Exception;
 
 class HomeController extends Controller
 {
@@ -78,7 +84,6 @@ class HomeController extends Controller
     {
         $row = Cart::get($row_id);
 
-        // Nếu số lượng là 1 thì không giảm được nữa
         if ($row->qty > 1) {
             Cart::update($row_id, $row->qty - 1);
         }
@@ -90,7 +95,6 @@ class HomeController extends Controller
     {
         $row = Cart::get($row_id);
 
-        // Không được tăng vượt quá 10 sản phẩm
         if ($row->qty < 10) {
             Cart::update($row_id, $row->qty + 1);
         }
@@ -108,15 +112,46 @@ class HomeController extends Controller
         return view('frontend.lienhe');
     }
 
-    // Trang đăng ký dành cho khách hàng
     public function getDangKy()
     {
         return view('user.dangky');
     }
 
-    // Trang đăng nhập dành cho khách hàng
     public function getDangNhap()
     {
         return view('user.dangnhap');
+    }
+
+    public function getGoogleLogin()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function getGoogleCallback()
+    {
+        try {
+            $user = Socialite::driver('google')
+                ->setHttpClient(new \GuzzleHttp\Client(['verify' => false]))
+                ->stateless()
+                ->user();
+        } catch (Exception $e) {
+            return redirect()->route('user.dangnhap')->with('warning', 'Lỗi xác thực. Xin vui lòng thử lại!');
+        }
+
+        $existingUser = User::where('email', $user->email)->first();
+        if ($existingUser) {
+            Auth::login($existingUser, true);
+            return redirect()->route('user.home');
+        } else {
+            $newUser = User::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'username' => Str::before($user->email, '@'),
+                'password' => Hash::make('larashop@2025'),
+            ]);
+
+            Auth::login($newUser, true);
+            return redirect()->route('user.home');
+        }
     }
 }
